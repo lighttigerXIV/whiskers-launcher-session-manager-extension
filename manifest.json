@@ -1,0 +1,50 @@
+{
+    "id": "com.lighttigerxiv.session.manager",
+    "name": "Session Manager",
+    "description": "This extension adds options to shutdown, reboot, suspend, hibernate and logout",
+    "icon": "./src/images/icon.png",
+    "os": [
+        "linux",
+        "windows"
+    ],
+    "keyword": "sm",
+    "settings": {
+        "any": [],
+        "linux": [
+            {
+                "id": "desktop_environment",
+                "name": "Desktop Environment",
+                "description": "Select the desktop environment. Every DE/WM requires a different command to logout",
+                "input": "select",
+                "default_value": "gnome",
+                "options": [
+                    {
+                        "name": "Gnome",
+                        "value": "gnome"
+                    },
+                    {
+                        "name": "KDE",
+                        "value": "kde"
+                    },
+                    {
+                        "name": "Custom",
+                        "value": "custom"
+                    }
+                ]
+            },
+            {
+                "id": "custom_logout",
+                "name": "Custom Logout Command",
+                "input": "text",
+                "default_value": "",
+                "show_condition":[
+                    {
+                        "setting": "desktop_environment",
+                        "value": "custom"
+                    }                
+                ]
+            }
+        ],
+        "windows": []
+    }
+}
