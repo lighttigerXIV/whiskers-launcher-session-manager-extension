@@ -1,8 +1,7 @@
 {
-    "id": "com.lighttigerxiv.session.manager",
+    "id": "com-lighttigerxiv-session-manager",
     "name": "Session Manager",
     "description": "This extension adds options to shutdown, reboot, suspend, hibernate and logout",
-    "icon": "./src/images/icon.png",
     "os": [
         "linux",
         "windows"

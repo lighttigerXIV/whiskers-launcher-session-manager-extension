@@ -6,15 +6,16 @@ use simple_kl_rs::{
     extensions::get_parameters,
     extensions::Function::GetResults,
     extensions::{return_results, Function::RunAction},
+    paths::get_extension_icon,
+    paths::get_extension_path,
     results::{IconWithTextResult, SimpleKLResult},
-    settings::Settings, paths::get_extension_path,
-    paths::get_extension_icon
+    settings::Settings,
 };
 
 fn main() {
     let parameters = get_parameters();
     let function = parameters.function;
-    let extension_id = "com.lighttigerxiv.session.manager".to_string();
+    let extension_id = "com-lighttigerxiv-session-manager".to_string();
 
     match function {
         GetResults => {
@@ -23,58 +24,82 @@ fn main() {
             let mut results: Vec<SimpleKLResult> = Vec::new();
 
             if matcher.fuzzy_match("shutdown", &search_text).is_some() {
-                results.push(SimpleKLResult::IconWithText(IconWithTextResult {
-                    icon: String::from(get_extension_icon(extension_id.clone())),
-                    text: String::from("Shutdown"),
-                    action: ResultAction::ExtensionAction(ExtensionAction::new(
-                        extension_id.clone(),
-                        String::from("shutdown"),
-                    )),
-                }))
+                results.push(SimpleKLResult::IconWithText(
+                    IconWithTextResult::new_with_color(
+                        get_extension_icon(
+                            extension_id.clone(),
+                            "@src/images/shutdown.svg".to_string(),
+                        ),
+                        "accent".to_string(),
+                        "Shutdown".to_string(),
+                        ResultAction::ExtensionAction(ExtensionAction::new(
+                            extension_id.clone(),
+                            "shutdown".to_string(),
+                        )),
+                    ),
+                ))
             }
 
             if matcher.fuzzy_match("reboot", &search_text).is_some() {
-                results.push(SimpleKLResult::IconWithText(IconWithTextResult {
-                    icon: String::from(get_extension_icon(extension_id.clone())),
-                    text: String::from("Reboot"),
-                    action: ResultAction::ExtensionAction(ExtensionAction::new(
-                        extension_id.clone(),
-                        String::from("reboot"),
-                    )),
-                }))
+                results.push(SimpleKLResult::IconWithText(
+                    IconWithTextResult::new_with_color(
+                        get_extension_icon(
+                            extension_id.clone(),
+                            "@src/images/reboot.svg".to_string(),
+                        ),
+                        "accent".to_string(),
+                        "Reboot".to_string(),
+                        ResultAction::ExtensionAction(ExtensionAction::new(
+                            extension_id.clone(),
+                            "reboot".to_string(),
+                        )),
+                    ),
+                ))
             }
 
             if matcher.fuzzy_match("suspend", &search_text).is_some() {
-                results.push(SimpleKLResult::IconWithText(IconWithTextResult {
-                    icon: String::from(get_extension_icon(extension_id.clone())),
-                    text: String::from("Suspend"),
-                    action: ResultAction::ExtensionAction(ExtensionAction::new(
-                        extension_id.clone(),
-                        String::from("suspend"),
-                    )),
-                }))
+                results.push(SimpleKLResult::IconWithText(
+                    IconWithTextResult::new_with_color(
+                        get_extension_icon(extension_id.clone(), "@src/images/zzz.svg".to_string()),
+                        "accent".to_string(),
+                        "Suspend".to_string(),
+                        ResultAction::ExtensionAction(ExtensionAction::new(
+                            extension_id.clone(),
+                            "suspend".to_string(),
+                        )),
+                    ),
+                ))
             }
 
             if matcher.fuzzy_match("hibernate", &search_text).is_some() {
-                results.push(SimpleKLResult::IconWithText(IconWithTextResult {
-                    icon: String::from(get_extension_icon(extension_id.clone())),
-                    text: String::from("Hibernate"),
-                    action: ResultAction::ExtensionAction(ExtensionAction::new(
-                        extension_id.clone(),
-                        String::from("hibernate"),
-                    )),
-                }))
+                results.push(SimpleKLResult::IconWithText(
+                    IconWithTextResult::new_with_color(
+                        get_extension_icon(extension_id.clone(), "@src/images/zzz.svg".to_string()),
+                        "accent".to_string(),
+                        "Hibernate".to_string(),
+                        ResultAction::ExtensionAction(ExtensionAction::new(
+                            extension_id.clone(),
+                            "hibernate".to_string(),
+                        )),
+                    ),
+                ))
             }
 
             if matcher.fuzzy_match("logout", &search_text).is_some() {
-                results.push(SimpleKLResult::IconWithText(IconWithTextResult {
-                    icon: String::from(get_extension_icon(extension_id.clone())),
-                    text: String::from("Logout"),
-                    action: ResultAction::ExtensionAction(ExtensionAction::new(
-                        extension_id.clone(),
-                        String::from("logout"),
-                    )),
-                }))
+                results.push(SimpleKLResult::IconWithText(
+                    IconWithTextResult::new_with_color(
+                        get_extension_icon(
+                            extension_id.clone(),
+                            "@src/images/logout.svg".to_string(),
+                        ),
+                        "accent".to_string(),
+                        "Logout".to_string(),
+                        ResultAction::ExtensionAction(ExtensionAction::new(
+                            extension_id.clone(),
+                            "logout".to_string(),
+                        )),
+                    ),
+                ))
             }
 
             return_results(results);
@@ -115,7 +140,10 @@ fn main() {
                 )
                 .unwrap();
 
-                println!("extension path: {}", &get_extension_path(extension_id.clone()).unwrap());
+                println!(
+                    "extension path: {}",
+                    &get_extension_path(extension_id.clone()).unwrap()
+                );
 
                 match desktop_environment_setting.as_str() {
                     "gnome" => {
