@@ -7,7 +7,6 @@ use simple_kl_rs::{
     extensions::Function::GetResults,
     extensions::{return_results, Function::RunAction},
     paths::get_extension_icon,
-    paths::get_extension_path,
     results::{IconWithTextResult, SimpleKLResult},
     settings::Settings,
 };
@@ -139,11 +138,6 @@ fn main() {
                     "desktop_environment".to_string(),
                 )
                 .unwrap();
-
-                println!(
-                    "extension path: {}",
-                    &get_extension_path(extension_id.clone()).unwrap()
-                );
 
                 match desktop_environment_setting.as_str() {
                     "gnome" => {
