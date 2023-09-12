@@ -5,16 +5,16 @@ use simple_kl_rs::{
     actions::{ExtensionAction, ResultAction},
     extensions::get_parameters,
     extensions::Function::GetResults,
-    extensions::{return_results, Function::RunAction},
+    extensions::{emit_results, Function::RunAction},
     paths::get_extension_icon,
     results::{IconWithTextResult, SimpleKLResult},
     settings::Settings,
 };
 
 fn main() {
-    let parameters = get_parameters();
+    let parameters = get_parameters().unwrap();
     let function = parameters.function;
-    let extension_id = "com-lighttigerxiv-session-manager".to_string();
+    let extension_id = "com-lighttigerxiv-session-manager";
 
     match function {
         GetResults => {
@@ -25,15 +25,12 @@ fn main() {
             if matcher.fuzzy_match("shutdown", &search_text).is_some() {
                 results.push(SimpleKLResult::IconWithText(
                     IconWithTextResult::new_with_color(
-                        get_extension_icon(
-                            extension_id.clone(),
-                            "@src/images/shutdown.svg".to_string(),
-                        ),
-                        "accent".to_string(),
-                        "Shutdown".to_string(),
+                        get_extension_icon(extension_id, "@src/images/shutdown.svg").unwrap(),
+                        "accent",
+                        "Shutdown",
                         ResultAction::ExtensionAction(ExtensionAction::new(
-                            extension_id.clone(),
-                            "shutdown".to_string(),
+                            extension_id,
+                            "shutdown",
                         )),
                     ),
                 ))
@@ -42,16 +39,10 @@ fn main() {
             if matcher.fuzzy_match("reboot", &search_text).is_some() {
                 results.push(SimpleKLResult::IconWithText(
                     IconWithTextResult::new_with_color(
-                        get_extension_icon(
-                            extension_id.clone(),
-                            "@src/images/reboot.svg".to_string(),
-                        ),
-                        "accent".to_string(),
-                        "Reboot".to_string(),
-                        ResultAction::ExtensionAction(ExtensionAction::new(
-                            extension_id.clone(),
-                            "reboot".to_string(),
-                        )),
+                        get_extension_icon(extension_id, "@src/images/reboot.svg").unwrap(),
+                        "accent",
+                        "Reboot",
+                        ResultAction::ExtensionAction(ExtensionAction::new(extension_id, "reboot")),
                     ),
                 ))
             }
@@ -59,12 +50,12 @@ fn main() {
             if matcher.fuzzy_match("suspend", &search_text).is_some() {
                 results.push(SimpleKLResult::IconWithText(
                     IconWithTextResult::new_with_color(
-                        get_extension_icon(extension_id.clone(), "@src/images/zzz.svg".to_string()),
-                        "accent".to_string(),
-                        "Suspend".to_string(),
+                        get_extension_icon(extension_id, "@src/images/zzz.svg").unwrap(),
+                        "accent",
+                        "Suspend",
                         ResultAction::ExtensionAction(ExtensionAction::new(
-                            extension_id.clone(),
-                            "suspend".to_string(),
+                            extension_id,
+                            "suspend",
                         )),
                     ),
                 ))
@@ -73,12 +64,12 @@ fn main() {
             if matcher.fuzzy_match("hibernate", &search_text).is_some() {
                 results.push(SimpleKLResult::IconWithText(
                     IconWithTextResult::new_with_color(
-                        get_extension_icon(extension_id.clone(), "@src/images/zzz.svg".to_string()),
-                        "accent".to_string(),
-                        "Hibernate".to_string(),
+                        get_extension_icon(extension_id, "@src/images/zzz.svg").unwrap(),
+                        "accent",
+                        "Hibernate",
                         ResultAction::ExtensionAction(ExtensionAction::new(
-                            extension_id.clone(),
-                            "hibernate".to_string(),
+                            extension_id,
+                            "hibernate",
                         )),
                     ),
                 ))
@@ -87,21 +78,15 @@ fn main() {
             if matcher.fuzzy_match("logout", &search_text).is_some() {
                 results.push(SimpleKLResult::IconWithText(
                     IconWithTextResult::new_with_color(
-                        get_extension_icon(
-                            extension_id.clone(),
-                            "@src/images/logout.svg".to_string(),
-                        ),
-                        "accent".to_string(),
-                        "Logout".to_string(),
-                        ResultAction::ExtensionAction(ExtensionAction::new(
-                            extension_id.clone(),
-                            "logout".to_string(),
-                        )),
+                        get_extension_icon(extension_id, "@src/images/logout.svg").unwrap(),
+                        "accent",
+                        "Logout",
+                        ResultAction::ExtensionAction(ExtensionAction::new(extension_id, "logout")),
                     ),
                 ))
             }
 
-            return_results(results);
+            emit_results(results);
         }
         RunAction => match parameters.action.unwrap().as_str() {
             "shutdown" => {
@@ -133,11 +118,8 @@ fn main() {
                     .expect("Error running shutdown command");
             }
             "logout" => {
-                let desktop_environment_setting = Settings::get_extension_setting(
-                    extension_id.clone(),
-                    "desktop_environment".to_string(),
-                )
-                .unwrap();
+                let desktop_environment_setting =
+                    Settings::get_extension_setting(extension_id, "desktop_environment").unwrap();
 
                 match desktop_environment_setting.as_str() {
                     "gnome" => {
@@ -150,16 +132,13 @@ fn main() {
                     "kde" => {
                         Command::new("sh")
                             .arg("-c")
-                            .arg("qdbus org.kde.ksmserver /KSMServer logout 0 0 1")
+                            .arg("qdbus org.kde.ksmserver /KSMServer logout 0 0 2")
                             .output()
                             .expect("Error running logout command");
                     }
                     "custom" => {
-                        let custom_logout_setting = Settings::get_extension_setting(
-                            extension_id.clone(),
-                            "custom_logout".to_string(),
-                        )
-                        .unwrap();
+                        let custom_logout_setting =
+                            Settings::get_extension_setting(extension_id, "custom_logout").unwrap();
 
                         Command::new("sh")
                             .arg("-c")
