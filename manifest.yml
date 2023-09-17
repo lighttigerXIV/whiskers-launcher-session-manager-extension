@@ -1,7 +1,7 @@
-id: com-lighttigerxiv-session-manager
+id: "com-lighttigerxiv-session-manager"
 version: "0.1.0"
 name: Session Manager
-description: This extension adds options to shutdown, reboot, suspend, hibernate and logout
+description: This extension is for debug purposes
 os: 
   - linux
   - windows
@@ -22,6 +22,13 @@ settings:
          value: custom
     - id: custom_logout
       name: Custom Logout
+      input: text
+      default_value: ''
+      show_condition:
+        - setting: desktop_environment
+          value: custom
+    - id: custom_lock
+      name: Custom Lock
       input: text
       default_value: ''
       show_condition:
