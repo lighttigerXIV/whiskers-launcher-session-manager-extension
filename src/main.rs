@@ -1,17 +1,24 @@
 //Add this to hide commands on windows
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{os::windows::process::CommandExt, process::Command};
+#[cfg(target_os = "windows")]
+use{
+    std::os::windows::process::CommandExt,
+    others::FLAG_NO_WINDOW
+};
+
+
+use std::process::Command;
 
 use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
 use resources::{get_logout_icon, get_reboot_icon, get_shutdown_icon, get_zzz_icon, EXTENSION_ID, get_lock_icon};
 use simple_kl_rs::{
     actions::{ExtensionAction, ResultAction},
     extensions::{emit_results, get_parameters, Function},
-    others::{FLAG_NO_WINDOW},
+    
     results::{IconWithTextResult, SimpleKLResult},
 };
-use simple_kl_rs::settings::Settings;
+use simple_kl_rs::extensions::get_extension_setting;
 
 pub mod resources;
 
@@ -98,6 +105,7 @@ fn main() {
         Function::RunAction => {
             let action = &parameters.action.unwrap();
 
+            #[cfg(target_os = "windows")]
             if cfg!(target_os = "windows") {
 
                 if action == "shutdown" {
@@ -142,7 +150,10 @@ fn main() {
                         .output()
                         .expect("Error running lock command");
                 }
-            } else {
+            } 
+            
+            #[cfg(target_os = "linux")]
+            if cfg!(target_os = "linux"){
                 if action == "shutdown" {
                     Command::new("sh")
                         .arg("-c")
@@ -177,7 +188,8 @@ fn main() {
 
                 if action == "logout" {
                     let de_setting =
-                        &Settings::get_extension_setting(EXTENSION_ID, "desktop_environment").unwrap();
+                        get_extension_setting(EXTENSION_ID, "desktop_environment")
+                            .expect("Error getting desktop environment setting");
 
                     if de_setting == "gnome"{
                         Command::new("sh")
@@ -197,7 +209,8 @@ fn main() {
 
                     if de_setting == "custom"{
                         let logout_setting =
-                            &Settings::get_extension_setting(EXTENSION_ID, "custom_logout").unwrap();
+                            get_extension_setting(EXTENSION_ID, "custom_logout")
+                                .expect("Error getting custom logout setting");
 
                         Command::new("sh")
                             .arg("-c")
@@ -209,7 +222,8 @@ fn main() {
 
                 if action == "lock"{
                     let de_setting =
-                        &Settings::get_extension_setting(EXTENSION_ID, "desktop_environment").unwrap();
+                        get_extension_setting(EXTENSION_ID, "desktop_environment")
+                            .expect("Error getting desktop environment setting");
 
                     if de_setting == "gnome"{
                         Command::new("sh")
@@ -229,7 +243,8 @@ fn main() {
 
                     if de_setting == "custom"{
                         let lock_setting =
-                            &Settings::get_extension_setting(EXTENSION_ID, "custom_lock").unwrap();
+                           get_extension_setting(EXTENSION_ID, "custom_lock")
+                               .expect("Error getting custom lock setting");
 
                         Command::new("sh")
                             .arg("-c")
