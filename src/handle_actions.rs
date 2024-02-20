@@ -16,7 +16,7 @@ pub fn handle_actions(context: Context) {
 
     #[cfg(target_os = "windows")]
     if cfg!(target_os = "windows") {
-        if action == "shutdown" {
+        if action == "shut_down" {
             Command::new("powershell")
                 .arg("-Command")
                 .arg("Stop-Computer")
@@ -63,7 +63,7 @@ pub fn handle_actions(context: Context) {
     #[cfg(target_os = "linux")]
     if cfg!(target_os = "linux") {
 
-        if action == "shutdown" {
+        if action == "shut_down" {
             Command::new("sh")
                 .arg("-c")
                 .arg("systemctl poweroff")
