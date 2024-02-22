@@ -1,13 +1,17 @@
 use std::process::Command;
 
-use whiskers_launcher_rs::api::extensions::{get_extension_setting, Context};
+use whiskers_launcher_rs::api::extensions::Context;
 
-use crate::EXTENSION_ID;
+#[cfg(target_os = "linux")]
+use {
+    crate::EXTENSION_ID,
+    whiskers_launcher_rs::api::extensions::get_extension_setting
+};
 
 #[cfg(target_os = "windows")]
 use{
     std::os::windows::process::CommandExt,
-    others::FLAG_NO_WINDOW
+    whiskers_launcher_rs::others::FLAG_NO_WINDOW
 };
 
 pub fn handle_actions(context: Context) {
