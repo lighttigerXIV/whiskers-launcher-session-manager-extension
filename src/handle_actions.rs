@@ -114,7 +114,7 @@ pub fn handle_actions(context: Context) {
             if desktop_environment == "kde" {
                 Command::new("sh")
                     .arg("-c")
-                    .arg("qdbus org.kde.ksmserver /KSMServer logout 0 0 2")
+                    .arg("qdbus org.kde.Shutdown /Shutdown  org.kde.Shutdown.logout")
                     .output()
                     .expect("Error running logout command");
             }
