@@ -1,22 +1,15 @@
 use std::process::Command;
+use whiskers_launcher_rs::api::extensions::{get_extension_setting, ExtensionRequest};
 
-use whiskers_launcher_rs::api::extensions::Context;
-
-#[cfg(target_os = "linux")]
-use {
-    crate::EXTENSION_ID,
-    whiskers_launcher_rs::api::extensions::get_extension_setting
-};
+use crate::EXTENSION_ID;
 
 #[cfg(target_os = "windows")]
-use{
-    std::os::windows::process::CommandExt,
-    whiskers_launcher_rs::others::FLAG_NO_WINDOW
-};
+use {std::os::windows::process::CommandExt, whiskers_launcher_rs::others::FLAG_NO_WINDOW};
 
-pub fn handle_actions(context: Context) {
-    let action = context.extension_action.unwrap();
-
+pub fn handle_actions(request: ExtensionRequest) {
+    let action = request.extension_action.unwrap();
+    let preset = get_extension_setting(EXTENSION_ID, "preset").unwrap();
+    let use_custom_preset = preset == "custom";
 
     #[cfg(target_os = "windows")]
     if cfg!(target_os = "windows") {
@@ -66,101 +59,64 @@ pub fn handle_actions(context: Context) {
 
     #[cfg(target_os = "linux")]
     if cfg!(target_os = "linux") {
+        let mut command = String::from("");
 
-        if action == "shut_down" {
-            Command::new("sh")
-                .arg("-c")
-                .arg("systemctl poweroff")
-                .output()
-                .expect("Error running poweroff command");
+        if action == "shutdown" {
+            command = if use_custom_preset {
+                get_extension_setting(EXTENSION_ID, "custom-shutdown").unwrap()
+            } else {
+                "systemctl poweroff".to_string()
+            };
         }
 
-        if action == "reboot" {
-            Command::new("sh")
-                .arg("-c")
-                .arg("systemctl reboot")
-                .output()
-                .expect("Error running reboot command");
+        if action == "restart" {
+            command = if use_custom_preset {
+                get_extension_setting(EXTENSION_ID, "custom-reboot").unwrap()
+            } else {
+                "systemctl reboot".to_string()
+            };
         }
 
         if action == "suspend" {
-            Command::new("sh")
-                .arg("-c")
-                .arg("systemctl suspend")
-                .output()
-                .expect("Error running suspend command");
+            command = if use_custom_preset {
+                get_extension_setting(EXTENSION_ID, "custom-suspend").unwrap()
+            } else {
+                "systemctl suspend".to_string()
+            };
         }
 
         if action == "hibernate" {
-            Command::new("sh")
-                .arg("-c")
-                .arg("systemctl hibernate")
-                .output()
-                .expect("Error running shutdown command");
+            command = if use_custom_preset {
+                get_extension_setting(EXTENSION_ID, "custom-hibernate").unwrap()
+            } else {
+                "systemctl hibernate".to_string()
+            };
         }
 
         if action == "logout" {
-            let desktop_environment = get_extension_setting(EXTENSION_ID, "desktop_environment")
-                .expect("Error getting desktop environment setting");
-
-            if desktop_environment == "gnome" {
-                Command::new("sh")
-                    .arg("-c")
-                    .arg("gnome-session-quit --no-prompt")
-                    .output()
-                    .expect("Error running logout command");
-            }
-
-            if desktop_environment == "kde" {
-                Command::new("sh")
-                    .arg("-c")
-                    .arg("qdbus org.kde.Shutdown /Shutdown  org.kde.Shutdown.logout")
-                    .output()
-                    .expect("Error running logout command");
-            }
-
-            if desktop_environment == "other" {
-                let logout_setting = get_extension_setting(EXTENSION_ID, "custom_logout")
-                    .expect("Error getting custom logout setting");
-
-                Command::new("sh")
-                    .arg("-c")
-                    .arg(logout_setting)
-                    .output()
-                    .expect("Error running logout command");
-            }
+            command = if use_custom_preset {
+                get_extension_setting(EXTENSION_ID, "custom-logout").unwrap()
+            } else {
+                if preset == "kde" {
+                    "qdbus org.kde.Shutdown /Shutdown  org.kde.Shutdown.logout".to_string()
+                } else {
+                    "gnome-session-quit --no-prompt".to_string()
+                }
+            };
         }
 
         if action == "lock" {
-            let desktop_environment = get_extension_setting(EXTENSION_ID, "desktop_environment")
-                .expect("Error getting desktop environment setting");
-
-            if desktop_environment == "gnome" {
-                Command::new("sh")
-                            .arg("-c")
-                            .arg("dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
-                            .output()
-                            .expect("Error running logout command");
-            }
-
-            if desktop_environment == "kde" {
-                Command::new("sh")
-                    .arg("-c")
-                    .arg("loginctl lock-session")
-                    .output()
-                    .expect("Error running logout command");
-            }
-
-            if desktop_environment == "other" {
-                let lock_setting = get_extension_setting(EXTENSION_ID, "custom_lock")
-                    .expect("Error getting custom lock setting");
-
-                Command::new("sh")
-                    .arg("-c")
-                    .arg(lock_setting)
-                    .output()
-                    .expect("Error running logout command");
+            command = match preset.as_str() {
+                "kde" => "loginctl lock-session".to_string(),
+                "gnome" => "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock".to_string(),
+                _ => get_extension_setting(EXTENSION_ID, "custom-lock").unwrap()
             }
         }
+
+        Command::new("sh")
+            .arg("-c")
+            .arg(command)
+            .output()
+            .expect("Error running command");
     }
 }

@@ -1,59 +1,93 @@
 {
   "id": "lighttigerxiv/session-manager",
   "name": "Session Manager",
-  "version_name": "1.0.0",
-  "version_code": 1,
   "description": "A extension that adds session options like shutdown/restart",
-  "os": ["*"],
   "keyword": "sm",
   "settings": [
     {
-      "id": "desktop_environment",
-      "title": "Desktop Environment",
-      "description": "Select the desktop environment",
-      "setting_type": "select",
+      "id": "preset",
+      "title": "Environment Preset",
+      "description": "Select your preset",
+      "setting_type": "Select",
       "default_value": "kde",
-      "os": ["linux"],
+      "os": "Linux",
       "select_options": [
         {
           "id": "kde",
-          "text": "KDE"
+          "value": "KDE"
         },
         {
           "id": "gnome",
-          "text": "Gnome"
+          "value": "Gnome"
         },
         {
-          "id": "other",
-          "text": "Other"
+          "id": "custom",
+          "value": "Custom"
         }
       ]
     },
     {
-      "id": "custom_lock",
-      "title": "Custom Lock",
-      "description": "Custom lock command",
-      "setting_type": "text",
-      "default_value": "",
-      "os": ["linux"],
+      "id": "custom-shutdown",
+      "title": "Custom Shutdown",
+      "description": "The command that will be executed when running the shut down command",
+      "setting_type": "Input",
+      "default_value": "systemctl poweroff",
       "show_conditions": [
         {
-          "setting_id": "desktop_environment",
-          "setting_value": "other"
+          "setting_id": "preset",
+          "setting_value": "custom"
         }
       ]
     },
     {
-      "id": "custom_logout",
+      "id": "custom-reboot",
+      "title": "Custom Reboot",
+      "description": "The command that will be executed when running the reboot command",
+      "setting_type": "Input",
+      "default_value": "systemctl reboot",
+      "show_conditions": [
+        {
+          "setting_id": "preset",
+          "setting_value": "custom"
+        }
+      ]
+    },
+    {
+      "id": "custom-suspend",
+      "title": "Custom Suspend",
+      "description": "The command that will be executed when running the suspend command",
+      "setting_type": "Input",
+      "default_value": "systemctl suspend",
+      "show_conditions": [
+        {
+          "setting_id": "preset",
+          "setting_value": "custom"
+        }
+      ]
+    },
+    {
+      "id": "custom-hibernate",
+      "title": "Custom Hibernate",
+      "description": "The command that will be executed when running the hibernate command",
+      "setting_type": "Input",
+      "default_value": "systemctl poweroff",
+      "show_conditions": [
+        {
+          "setting_id": "preset",
+          "setting_value": "custom"
+        }
+      ]
+    },
+    {
+      "id": "custom-logout",
       "title": "Custom Logout",
-      "description": "Custom logout command",
-      "setting_type": "text",
+      "description": "The command that will be executed when running the logout command",
+      "setting_type": "Input",
       "default_value": "",
-      "os": ["linux"],
       "show_conditions": [
         {
-          "setting_id": "desktop_environment",
-          "setting_value": "other"
+          "setting_id": "preset",
+          "setting_value": "custom"
         }
       ]
     }
