@@ -26,7 +26,11 @@
         },
         {
           "id": "hyprland",
-          "value": "Hyperland"
+          "value": "Hyprland"
+        },
+        {
+          "id": "cinnamon",
+          "value": "Cinnamon"
         },
         {
           "id": "custom",
