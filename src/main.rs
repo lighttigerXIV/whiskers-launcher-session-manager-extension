@@ -5,6 +5,7 @@ use whiskers_launcher_rs::api::extensions::{get_extension_request, ActionContext
 
 
 pub mod assets;
+pub mod command;
 mod handle_actions;
 mod handle_results;
 

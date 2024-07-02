@@ -1,5 +1,10 @@
-use std::process::Command;
+use std::{
+    env,
+    process::{exit, Command},
+};
 use whiskers_launcher_rs::api::extensions::ExtensionRequest;
+
+use crate::command::{get_custom_commands, get_session_commands};
 
 #[cfg(target_os = "linux")]
 use {crate::EXTENSION_ID, whiskers_launcher_rs::api::extensions::get_extension_setting};
@@ -12,7 +17,6 @@ pub fn handle_actions(request: ExtensionRequest) {
 
     #[cfg(target_os = "windows")]
     {
-
         if action == "shutdown" {
             Command::new("powershell")
                 .arg("-Command")
@@ -58,67 +62,43 @@ pub fn handle_actions(request: ExtensionRequest) {
     }
 
     #[cfg(target_os = "linux")]
-    if cfg!(target_os = "linux") {
-        let mut command = String::from("");
+    {
         let preset = get_extension_setting(EXTENSION_ID, "preset").unwrap();
-        let use_custom_preset = preset == "custom";
 
-        if action == "shutdown" {
-            command = if use_custom_preset {
-                get_extension_setting(EXTENSION_ID, "custom-shutdown").unwrap()
-            } else {
-                "systemctl poweroff".to_string()
-            };
-        }
+        let session_commands = match preset == "auto" {
+            true => {
+                let env =
+                    env::var("XDG_CURRENT_DESKTOP").expect("Error getting session environment");
 
-        if action == "restart" {
-            command = if use_custom_preset {
-                get_extension_setting(EXTENSION_ID, "custom-reboot").unwrap()
-            } else {
-                "systemctl reboot".to_string()
-            };
-        }
-
-        if action == "suspend" {
-            command = if use_custom_preset {
-                get_extension_setting(EXTENSION_ID, "custom-suspend").unwrap()
-            } else {
-                "systemctl suspend".to_string()
-            };
-        }
-
-        if action == "hibernate" {
-            command = if use_custom_preset {
-                get_extension_setting(EXTENSION_ID, "custom-hibernate").unwrap()
-            } else {
-                "systemctl hibernate".to_string()
-            };
-        }
-
-        if action == "logout" {
-            command = if use_custom_preset {
-                get_extension_setting(EXTENSION_ID, "custom-logout").unwrap()
-            } else {
-                if preset == "kde" {
-                    "qdbus org.kde.Shutdown /Shutdown  org.kde.Shutdown.logout".to_string()
-                } else {
-                    "gnome-session-quit --no-prompt".to_string()
-                }
-            };
-        }
-
-        if action == "lock" {
-            command = match preset.as_str() {
-                "kde" => "loginctl lock-session".to_string(),
-                "gnome" => "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock".to_string(),
-                _ => get_extension_setting(EXTENSION_ID, "custom-lock").unwrap()
+                get_session_commands(&env)
             }
-        }
+            false => {
+                if preset == "custom" {
+                    get_custom_commands()
+                } else {
+                    get_session_commands(&preset)
+                }
+            }
+        };
+
+        let command = match action.as_str() {
+            "shutdown" => &session_commands.shutdown,
+            "restart" => &session_commands.restart,
+            "suspend" => &session_commands.suspend,
+            "hibernate" => &session_commands.hibernate,
+            "logout" => &session_commands.logout,
+            "lock" => &session_commands.lock,
+            _ => {
+                panic!("HUH? 😺");
+            }
+        };
 
         Command::new("sh")
             .arg("-c")
             .arg(command)
             .output()
             .expect("Error running command");
+
+        exit(0);
     }
 }

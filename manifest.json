@@ -9,9 +9,13 @@
       "title": "Environment Preset",
       "description": "Select your preset",
       "setting_type": "Select",
-      "default_value": "kde",
+      "default_value": "auto",
       "os": "Linux",
       "select_options": [
+        {
+          "id": "auto",
+          "value": "Auto"
+        },
         {
           "id": "kde",
           "value": "KDE"
@@ -19,6 +23,10 @@
         {
           "id": "gnome",
           "value": "Gnome"
+        },
+        {
+          "id": "hyprland",
+          "value": "Hyperland"
         },
         {
           "id": "custom",
@@ -82,6 +90,19 @@
       "id": "custom-logout",
       "title": "Custom Logout",
       "description": "The command that will be executed when running the logout command",
+      "setting_type": "Input",
+      "default_value": "",
+      "show_conditions": [
+        {
+          "setting_id": "preset",
+          "setting_value": "custom"
+        }
+      ]
+    },
+    {
+      "id": "custom-lock",
+      "title": "Custom Lock",
+      "description": "The command that will be executed when running the lock command",
       "setting_type": "Input",
       "default_value": "",
       "show_conditions": [
