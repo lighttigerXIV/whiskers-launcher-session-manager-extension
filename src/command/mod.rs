@@ -101,7 +101,7 @@ pub fn get_session_commands(environment: &str) -> SessionCommands {
     match environment.to_lowercase().as_str() {
         "kde" => get_kde_commands(),
         "gnome" => get_gnome_commands(),
-        "cinnamon" => get_cinnamon_commands(),
+        "x-cinnamon" => get_cinnamon_commands(),
         "hyprland" => get_hyprland_commands(),
         _ => get_default_commands(),
     }
