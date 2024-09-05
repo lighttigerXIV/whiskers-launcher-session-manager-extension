@@ -37,7 +37,7 @@ pub fn get_kde_commands() -> SessionCommands {
         "systemctl reboot",
         "systemctl suspend",
         "systemctl hibernate",
-        "qdbus org.kde.Shutdown /Shutdown  org.kde.Shutdown.logout",
+        "qdbus6 org.kde.Shutdown /Shutdown  org.kde.Shutdown.logout",
         "loginctl lock-session",
     )
 }
