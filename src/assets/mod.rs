@@ -1,11 +1,12 @@
-use whiskers_launcher_rs::api::extensions::get_extension_dir;
+use std::path::PathBuf;
 
-use crate::EXTENSION_ID;
+use whiskers_launcher_core::features::extensions::get_extension_dir;
 
-pub fn get_icon(name: impl Into<String>) -> String {
+use crate::ID;
+
+pub fn get_icon(name: impl Into<String>) -> PathBuf {
     let name = name.into();
-    let mut path = get_extension_dir(EXTENSION_ID).unwrap();
+    let mut path = get_extension_dir(ID).unwrap();
     path.push(format!("src/assets/icons/{}.svg", name));
-
-    return path.into_os_string().into_string().unwrap();
+    path
 }

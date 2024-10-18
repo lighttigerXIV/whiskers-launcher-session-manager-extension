@@ -1,6 +1,6 @@
 [package]
 name = "session-manager"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 
 [dependencies]
@@ -8,6 +8,5 @@ serde = "1.0.181"
 serde_json = "1.0.113"
 open = "5.0.0"
 tokio = { version = "1.32.0", features = ["full"] }
-#whiskers-launcher-rs = { path = "/home/lighttigerxiv/Projects/Cli/whiskers-launcher-rs" }
-whiskers-launcher-rs = { git = "https://github.com/Whiskers-Apps/whiskers-launcher-rs" }
-#whiskers-launcher-rs = { path = "C:\\Users\\lighttigerxiv\\Projects\\WhiskersApps\\whiskers-launcher-rs" }
+whiskers-launcher-core = {path = "/home/lighttigerxiv/Projects/whiskers-apps/whiskers-launcher-core" } 
+sniffer-rs = "1.0.3"

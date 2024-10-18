@@ -14,27 +14,27 @@
       "select_options": [
         {
           "id": "auto",
-          "value": "Auto"
+          "text": "Auto"
         },
         {
           "id": "kde",
-          "value": "KDE"
+          "text": "KDE"
         },
         {
           "id": "gnome",
-          "value": "Gnome"
+          "text": "Gnome"
         },
         {
           "id": "hyprland",
-          "value": "Hyprland"
+          "text": "Hyprland"
         },
         {
           "id": "x-cinnamon",
-          "value": "Cinnamon"
+          "text": "Cinnamon"
         },
         {
           "id": "custom",
-          "value": "Custom"
+          "text": "Custom"
         }
       ]
     },

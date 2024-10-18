@@ -2,18 +2,14 @@ use std::{
     env,
     process::{exit, Command},
 };
-use whiskers_launcher_rs::api::extensions::ExtensionRequest;
 
-use crate::command::{get_custom_commands, get_session_commands};
+use whiskers_launcher_core::features::extensions::{get_extension_setting, ExtensionRequest};
 
-#[cfg(target_os = "linux")]
-use {crate::EXTENSION_ID, whiskers_launcher_rs::api::extensions::get_extension_setting};
+use crate::{command::{get_custom_commands, get_session_commands}, ID};
 
-#[cfg(target_os = "windows")]
-use {std::os::windows::process::CommandExt, whiskers_launcher_rs::utils::FLAG_NO_WINDOW};
 
-pub fn handle_actions(request: ExtensionRequest) {
-    let action = request.extension_action.unwrap();
+pub fn run_command(request: ExtensionRequest) {
+    let action = request.command.unwrap();
 
     #[cfg(target_os = "windows")]
     {
@@ -63,7 +59,7 @@ pub fn handle_actions(request: ExtensionRequest) {
 
     #[cfg(target_os = "linux")]
     {
-        let preset = get_extension_setting(EXTENSION_ID, "preset").unwrap();
+        let preset = get_extension_setting(ID, "preset").unwrap();
 
         let session_commands = match preset == "auto" {
             true => {

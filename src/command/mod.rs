@@ -1,6 +1,6 @@
-use whiskers_launcher_rs::api::extensions::get_extension_setting;
+use whiskers_launcher_core::features::extensions::get_extension_setting;
 
-use crate::EXTENSION_ID;
+use crate::ID;
 
 pub struct SessionCommands {
     pub shutdown: String,
@@ -77,12 +77,12 @@ pub fn get_hyprland_commands() -> SessionCommands {
 
 pub fn get_custom_commands() -> SessionCommands {
     SessionCommands::new(
-        &get_extension_setting(EXTENSION_ID, "custom-shutdown").unwrap(),
-        &get_extension_setting(EXTENSION_ID, "custom-reboot").unwrap(),
-        &get_extension_setting(EXTENSION_ID, "custom-suspend").unwrap(),
-        &get_extension_setting(EXTENSION_ID, "custom-hibernate").unwrap(),
-        &get_extension_setting(EXTENSION_ID, "custom-logout").unwrap(),
-        &get_extension_setting(EXTENSION_ID, "custom-lock").unwrap(),
+        &get_extension_setting(ID, "custom-shutdown").unwrap(),
+        &get_extension_setting(ID, "custom-reboot").unwrap(),
+        &get_extension_setting(ID, "custom-suspend").unwrap(),
+        &get_extension_setting(ID, "custom-hibernate").unwrap(),
+        &get_extension_setting(ID, "custom-logout").unwrap(),
+        &get_extension_setting(ID, "custom-lock").unwrap(),
     )
 }
 
