@@ -8,5 +8,5 @@ serde = "1.0.181"
 serde_json = "1.0.113"
 open = "5.0.0"
 tokio = { version = "1.32.0", features = ["full"] }
-whiskers-launcher-core = {path = "/home/lighttigerxiv/Projects/whiskers-apps/whiskers-launcher-core" } 
-sniffer-rs = "1.0.3"
+sniffer-rs = "1.1.1"
+whiskers-launcher-core = "0.3.0"

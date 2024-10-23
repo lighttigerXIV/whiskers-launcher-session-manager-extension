@@ -1,12 +1,20 @@
-use std::{
-    env,
-    process::{exit, Command},
+use std::process::Command;
+
+use whiskers_launcher_core::features::extensions::ExtensionRequest;
+
+#[cfg(target_os = "windows")]
+use {std::os::windows::process::CommandExt, whiskers_launcher_core::utils::FLAG_NO_WINDOW};
+
+#[cfg(target_os = "linux")]
+use {
+    crate::{
+        command::{get_custom_commands, get_session_commands},
+        ID,
+    },
+    std::env,
+    std::process::exit,
+    whiskers_launcher_core::features::extensions::get_extension_setting,
 };
-
-use whiskers_launcher_core::features::extensions::{get_extension_setting, ExtensionRequest};
-
-use crate::{command::{get_custom_commands, get_session_commands}, ID};
-
 
 pub fn run_command(request: ExtensionRequest) {
     let action = request.command.unwrap();
