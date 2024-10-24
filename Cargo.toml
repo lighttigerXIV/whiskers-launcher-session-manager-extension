@@ -9,4 +9,4 @@ serde_json = "1.0.113"
 open = "5.0.0"
 tokio = { version = "1.32.0", features = ["full"] }
 sniffer-rs = "1.1.1"
-whiskers-launcher-core = "0.3.0"
+whiskers-launcher-core = "0.3.1"
